@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import (QMainWindow, QTabWidget, QWidget, QPushButton,
 from core.draw_logic import get_one_card, ten_pull
 from core.data_save import load_data, reset_all_data
 from core.chart_view import ChartWidget
+from ui.draw_anim_dialog import DrawAnimDialog
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -80,11 +81,14 @@ class MainWindow(QMainWindow):
             QMessageBox.warning(self, "提示", "抽卡次数不足！")
             return
         name, qua = get_one_card(self.data)
-        self.result_text.append(f"【{qua}】{name}")
+        anim_win = DrawAnimDialog(name, qua, self)
+        anim_win.exec_()
+
         self.data = load_data()
         self.update_info_label()
         self.refresh_collection()
         self.refresh_stat()
+        self.result_text.append(f"【{qua}】{name}")
 
     def on_ten(self):
         if self.data["remain_draw"] < 10:
@@ -92,12 +96,20 @@ class MainWindow(QMainWindow):
             return
         res = ten_pull(self.data)
         self.result_text.append("=====十连结果=====")
+        # 依次播放每张卡动画
+        delay = 0
         for name, qua in res:
+            QTimer.singleShot(delay, lambda n=name,q=qua: self.show_single_anim(n,q))
+            delay += 500
             self.result_text.append(f"【{qua}】{name}")
         self.data = load_data()
         self.update_info_label()
         self.refresh_collection()
         self.refresh_stat()
+
+    def show_single_anim(self, name, qua):
+        dialog = DrawAnimDialog(name, qua, self)
+        dialog.exec_()
 
     def on_reset(self):
         reset_all_data()

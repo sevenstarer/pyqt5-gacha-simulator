@@ -5,6 +5,7 @@ from core.draw_logic import get_one_card, ten_pull
 from core.data_save import load_data, reset_all_data
 from core.chart_view import ChartWidget
 from ui.draw_anim_dialog import DrawAnimDialog
+from PyQt5.QtCore import Qt, QPropertyAnimation, QTimer
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -91,6 +92,7 @@ class MainWindow(QMainWindow):
         self.result_text.append(f"【{qua}】{name}")
 
     def on_ten(self):
+        from PyQt5.QtCore import QTimer
         if self.data["remain_draw"] < 10:
             QMessageBox.warning(self, "提示", "抽卡次数不足10次！")
             return

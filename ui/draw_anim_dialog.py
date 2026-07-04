@@ -14,8 +14,6 @@ class DrawAnimDialog(QDialog):
         self.setModal(True)
         self.setAutoFillBackground(False)
         self.bg_pix = QPixmap("assets/summon_bg.jpg")
-        print("图片加载状态：", self.bg_pix.isNull())
-        print("图片宽高：", self.bg_pix.width(), self.bg_pix.height())
 
         if not self.bg_pix.isNull():
             self.bg_pix = self.bg_pix.scaled(self.size(), Qt.KeepAspectRatioByExpanding)
